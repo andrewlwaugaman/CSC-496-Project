@@ -26,18 +26,33 @@ elections = []
 max_ranking_length = 0
 min_ranking_length = 0
 
+if args.party_size > 26:
+    party_size = 26
+elif args.party_size < 1:
+    party_size = 1
+else:
+    party_size = args.party_size
 if args.max_ranking_length == -1:
-    max_ranking_length = args.parties*args.party_size
+    max_ranking_length = args.parties*party_size
 else:
     max_ranking_length = args.max_ranking_length
 if args.min_ranking_length == -1:
     min_ranking_length = max_ranking_length
 else:
     min_ranking_length = min(args.min_ranking_length, max_ranking_length)
+    
+alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
 possible_party_rankings = []
+unaffiliated_rankings = (list(itertools.permutations(range(0, party_size), party_size)))
 for i in range(args.parties):
-    possible_party_rankings.append(list(itertools.permutations(range(i*args.party_size, (i+1)*args.party_size), args.party_size)))
+    party_ranking_group = []
+    for ranking in unaffiliated_rankings:
+        possible_ranking = []
+        for candidate in ranking:
+            possible_ranking.append(alphabet[i] + "." + str(candidate))
+        party_ranking_group.append(possible_ranking)
+    possible_party_rankings.append(party_ranking_group)
 
 possible_party_ranking_permutations = list(itertools.permutations(possible_party_rankings, args.parties))
 possible_rankings_max_length = []
@@ -83,7 +98,7 @@ for i in range(args.elections):
 
 return_dict = {
     "num_voters": args.voters,
-    "num_candidates": args.parties*args.party_size,
+    "num_candidates": args.parties*party_size,
     "max_unique_rankings": max_rankings,
     "max_ranking_length": max_ranking_length,
     "min_ranking_length": min_ranking_length,
