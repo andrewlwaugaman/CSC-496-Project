@@ -1,0 +1,5 @@
+[
+{ "ballots": [
+{ "count":  8, "ranking": [0, 1] },
+{ "count":  5, "ranking": [0, 2] }],
+"winners": {} }]

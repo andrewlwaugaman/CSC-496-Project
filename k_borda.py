@@ -23,7 +23,11 @@ def k_borda(ballots: list[Ballot], numWinners: int) -> Result:
     for ballot in ballots:
         for i, candidate in enumerate(ballot.ranking):
             scores[candidate] += points[i] * ballot.tally
-    winner_scores = list(scores.values()).sort(reverse=True)[0:numWinners]
+
+    scores_list = list(scores.values())
+    scores_list.sort(reverse=True)
+    winner_scores = scores_list[0:numWinners]
+    
     winners: list[Hashable] = []
     for score in winner_scores:
         to_remove = []
@@ -33,7 +37,7 @@ def k_borda(ballots: list[Ballot], numWinners: int) -> Result:
                 winners.append(candidate)
         for candidate in to_remove:
             scores.pop(candidate)
-    return winners[0:numWinners], scores[winners[numWinners-1]] == scores[winners[numWinners]]
+    return winners[0:numWinners]
 
 
 scheme: Scheme = k_borda

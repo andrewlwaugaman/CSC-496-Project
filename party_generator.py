@@ -6,10 +6,10 @@ import json
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--num-voters", dest="voters", default=10, type=int)
-parser.add_argument("--num-parties", dest="parties", default=3, type=int)
+parser.add_argument("--num-voters", dest="voters", default=1000, type=int)
+parser.add_argument("--num-parties", dest="parties", default=2, type=int)
 parser.add_argument("--party-size", dest="party_size", default=3, type=int)
-parser.add_argument("--max-unique-rankings", dest="max_rankings", default=-1, type=int)
+parser.add_argument("--max-unique-rankings", dest="max_rankings", default=10, type=int)
 parser.add_argument(
     "--max-ranking-length", dest="max_ranking_length", default=-1, type=int
 )
@@ -17,7 +17,7 @@ parser.add_argument(
     "--min-ranking-length", dest="min_ranking_length", default=-1, type=int
 )
 parser.add_argument("--num-elections", dest="elections", default=1, type=int)
-parser.add_argument("--output-file", dest="output", default="")
+parser.add_argument("--output-file", dest="output", default="elections.json")
 args = parser.parse_args()
 
 random.seed(1)

@@ -1,10 +1,10 @@
 from shared_main import shared_main
 
-from rouse import scheme
+from stv import scheme
 
 
 def main() -> None:
-    shared_main("rouse", scheme)
+    shared_main("stv", scheme)
 
 
 if __name__ == "__main__":
