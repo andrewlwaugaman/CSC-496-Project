@@ -1,5 +1,4 @@
 import argparse
-import math
 import itertools
 import random
 import json
@@ -17,7 +16,7 @@ parser.add_argument(
     "--min-ranking-length", dest="min_ranking_length", default=-1, type=int
 )
 parser.add_argument("--num-elections", dest="elections", default=1, type=int)
-parser.add_argument("--output-file", dest="output", default="elections.json")
+parser.add_argument("--output-file", dest="output", default="electionCorpus.json")
 args = parser.parse_args()
 
 random.seed(1)

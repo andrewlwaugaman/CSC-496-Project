@@ -9,3 +9,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# python3 main.py --corpus elections.json --overwrite

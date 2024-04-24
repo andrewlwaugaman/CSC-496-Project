@@ -46,6 +46,16 @@ def recalculate_weights(candidates: dict[Hashable, float], quota, counts):
             candidates[candidate] = candidates[candidate] * quota/counts[candidate]
     return candidates
 
+def count_first(ballots: list[Ballot]) -> dict[Hashable, int]:
+    firstCounts = {}
+    for ballot in ballots:
+        for candidate in ballot.ranking:
+            firstCounts[candidate] = 0
+    for ballot in ballots:
+        if len(ballot.ranking) > 0:
+            firstCounts[ballot.ranking[0]] += ballot.tally
+    return firstCounts
+
 def stv(intBallots: list[Ballot], numWinners: int) -> Result:
     # A value of 0 implies a candidate is eliminated, a value of 1 implies a candidate is hopeful,
     # and a value between 0 and 1 implies the candidate has been elected.
@@ -56,30 +66,37 @@ def stv(intBallots: list[Ballot], numWinners: int) -> Result:
             candidates[candidate] = 1
     if (numWinners >= len(candidates)):
         return list(candidates.keys())
-    
+
     winners = set()
     while (len(winners) < numWinners):
         quota = calculate_quota(ballots, numWinners, candidates)
         counts = count_votes(ballots, candidates)
         winner_added = False
         for candidate in counts.keys():
-            if counts[candidate] >= quota:
+            if counts[candidate] >= quota and candidate not in winners:
                 winners.add(candidate)
                 winner_added = True
         if winner_added == False:
             quota_adjustment_needed = False
             for candidate in winners:
-                if 0.9999 < counts[candidate] / quota < 1.0001:
+                if (0.9999 < counts[candidate] / quota < 1.0001) == False:
                     quota_adjustment_needed = True
             if quota_adjustment_needed == False:
-                min_vote = min(counts.values())
+                min_vote = max(counts.values())
                 loser = None
+                for candidate in candidates.keys():
+                    if counts[candidate] < min_vote and candidates[candidate] > 0:
+                        min_vote = counts[candidate]
+                        loser = candidate
                 for candidate in candidates.keys():
                     if counts[candidate] == min_vote:
                         loser = candidate
                 candidates[loser] = 0
         candidates = recalculate_weights(candidates, quota, counts)
-        print("A")
+        #print(quota)
+        #print(counts)
+        #print(candidates)
+    #print()
     return list(winners)
 
 
