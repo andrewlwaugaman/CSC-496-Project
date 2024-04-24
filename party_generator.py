@@ -5,10 +5,10 @@ import json
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--num-voters", dest="voters", default=1000, type=int)
-parser.add_argument("--num-parties", dest="parties", default=2, type=int)
+parser.add_argument("--num-voters", dest="voters", default=10000, type=int)
+parser.add_argument("--num-parties", dest="parties", default=4, type=int)
 parser.add_argument("--party-size", dest="party_size", default=3, type=int)
-parser.add_argument("--max-unique-rankings", dest="max_rankings", default=10, type=int)
+parser.add_argument("--max-unique-rankings", dest="max_rankings", default=30, type=int)
 parser.add_argument(
     "--max-ranking-length", dest="max_ranking_length", default=-1, type=int
 )
@@ -19,7 +19,7 @@ parser.add_argument("--num-elections", dest="elections", default=1, type=int)
 parser.add_argument("--output-file", dest="output", default="electionCorpus.json")
 args = parser.parse_args()
 
-random.seed(1)
+#random.seed(1)
 elections = []
 
 max_ranking_length = 0
@@ -94,6 +94,12 @@ for i in range(args.elections):
                     "count": vote_partitions[j] - vote_partitions[j - 1],
                 }
             )
+    elections[i]["first_place_counts"] = {}
+    for ballot in elections[i]["ballots"]:
+        elections[i]["first_place_counts"][ballot["ranking"][0][0]] = 0
+    for ballot in elections[i]["ballots"]:
+        elections[i]["first_place_counts"][ballot["ranking"][0][0]] += ballot["count"]
+    #print(elections[i])
 
 return_dict = {
     "num_voters": args.voters,

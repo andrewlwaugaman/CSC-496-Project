@@ -65,7 +65,7 @@ def do_election(
     election: Election,
     verbose: bool,
 ):
-    result = scheme(election.ballots, 2)
+    result = scheme(election.ballots, 6)
     winner = result
     if verbose:
         pprint(election.ballots, indent=4)

@@ -131,6 +131,7 @@ def unmarshal_election(data: Any) -> Election:
     return Election(
         [unmarshal_ballot(b) for b in data["ballots"]],
         data["winners"] if "winners" in data else {},
+        data["first_place_counts"],
     )
 
 

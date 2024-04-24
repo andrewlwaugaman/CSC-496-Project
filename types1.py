@@ -14,6 +14,7 @@ Result = tuple[Hashable | None, bool]
 class Election(NamedTuple):
     ballots: list[Ballot]
     winners: dict[str, Hashable]
+    first_place_counts: dict[Hashable, int]
 
 
 class Corpus(NamedTuple):
