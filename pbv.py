@@ -35,7 +35,6 @@ def pbv(ballots: list[Ballot], numWinners: int) -> Result:
             candidates.add(candidate)
     if (numWinners >= len(candidates)):
         return list(candidates)
-    tie = False
     while len(winners) < numWinners:
         temp_ballots = []
         for ballot in ballots:
@@ -43,20 +42,17 @@ def pbv(ballots: list[Ballot], numWinners: int) -> Result:
         temp_candidates = set()
         for candidate in candidates:
             temp_candidates.add(candidate)
-        while len(temp_candidates) > 1 and not tie:
+        while len(temp_candidates) > 1:
             firstCounts = count_first(temp_ballots)
             firstCountsList = list(firstCounts.values())
             losers = set()
             lowest = min(firstCountsList)
-            if (lowest != max(firstCountsList)):
-                for candidate in temp_candidates:
-                    if firstCounts[candidate] == lowest:
-                        losers.add(candidate)
-                loser = losers.pop()
-                temp_ballots = eliminate_candidate(ballots, loser)
-                temp_candidates.remove(loser)
-            else:
-                tie = True
+            for candidate in temp_candidates:
+                if firstCounts[candidate] == lowest:
+                    losers.add(candidate)
+            loser = losers.pop()
+            temp_ballots = eliminate_candidate(temp_ballots, loser)
+            temp_candidates.remove(loser)
         winner = temp_candidates.pop()
         winners.append(winner)
         candidates.remove(winner)

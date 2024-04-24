@@ -90,11 +90,11 @@ def stv(intBallots: list[Ballot], numWinners: int) -> Result:
                         loser = candidate
                 candidates[loser] = 0
         candidates = recalculate_weights(candidates, quota, counts)
-        print(quota)
-        print(counts)
-        print(candidates)
-        print()
-    print()
+        #print(quota)
+        #print(counts)
+        #print(candidates)
+        #print()
+    #print()
     return list(winners)
 
 

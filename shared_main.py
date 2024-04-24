@@ -65,9 +65,8 @@ def do_election(
     election: Election,
     verbose: bool,
 ):
-    result = scheme(election.ballots, 6)
-    winner = result
-    print(result)
+    result = scheme(election.ballots)
+    winner: Hashable = result[0] if result[1] else "<AMBIGUOUS>"
     if verbose:
         pprint(election.ballots, indent=4)
         print(result)
