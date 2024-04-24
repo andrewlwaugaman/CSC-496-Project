@@ -83,7 +83,6 @@ def read_corpus(f: TextIOWrapper):
 
 
 def unmarshal_corpus(data: Any) -> Corpus:
-    print(data)
     return Corpus(
         num_candidates=data["num_candidates"],
         num_voters=data["num_voters"],

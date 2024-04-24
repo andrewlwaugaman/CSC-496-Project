@@ -67,6 +67,7 @@ def do_election(
 ):
     result = scheme(election.ballots, 6)
     winner = result
+    print(result)
     if verbose:
         pprint(election.ballots, indent=4)
         print(result)
