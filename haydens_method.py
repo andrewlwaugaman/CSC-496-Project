@@ -2,7 +2,7 @@ import argparse
 from types1 import Ballot, Scheme
 import math
 
-def process_round(ballots : dict, candidates : list, alpha : float = 0.01, last_round : bool = False, verbose : bool = True) -> dict:
+def process_round(ballots : dict, candidates : list, alpha : float = 0.01, last_round : bool = False, verbose : bool = False) -> dict:
     '''
     Main function to generate winner from given ballots and alpha (hyperparameter) value.
     Uses Condorcet winner criterion to calculate a matrix for each pair of candidates, but where the number of votes (points)
@@ -106,10 +106,11 @@ def recalculate_ballots(ballots : dict, winner : str, alpha : float) -> dict:
                 new_ballots[ballot_without_winner] += ballots[ballot] / (1 + distance_from_first * alpha)
     return new_ballots
 
-def process_election(ballots : dict, num_winners : int, alpha : float = 0.01) -> list:
+def process_election(ballots : list[Ballot], num_winners : int, alpha : float = 0.01) -> list:
     '''Function to process a multi-winner election'''
+    converted_ballots = {ballot.ranking : ballot.tally for ballot in ballots}
     winners = []
-    new_ballots = ballots
+    new_ballots = converted_ballots
     for i in range(num_winners):
         if None in winners:
             return winners

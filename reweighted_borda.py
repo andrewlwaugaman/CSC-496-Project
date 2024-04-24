@@ -52,7 +52,6 @@ def reweighted_borda(intBallots: list[Ballot], numWinners: int) -> Result:
                 scores[candidate] += points[i] * ballot["tally"]
         winner = None
         max_score = 0.0
-        print(scores)
         for candidate in candidates:
             if scores[candidate] > max_score and candidate not in winners:
                 max_score = scores[candidate]
