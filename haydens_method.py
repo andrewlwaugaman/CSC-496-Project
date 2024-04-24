@@ -86,7 +86,8 @@ def elections_test(ballots : list[Ballot]):
                 candidates.append(candidate)
     winner = process_round(converted_ballots, candidates, last_round=True, verbose=False)
     return (winner, True) if winner not in [None, (None, None)] else (None, False)
-scheme: Scheme = elections_test
+
+#scheme: Scheme = elections_test #Used for single winner
 
 def recalculate_ballots(ballots : dict, winner : str, alpha : float) -> dict:
     '''
@@ -105,7 +106,7 @@ def recalculate_ballots(ballots : dict, winner : str, alpha : float) -> dict:
                 new_ballots[ballot_without_winner] += ballots[ballot] / (1 + distance_from_first * alpha)
     return new_ballots
 
-def process_election(ballots : dict, num_winners : int, alpha : float) -> list:
+def process_election(ballots : dict, num_winners : int, alpha : float = 0.01) -> list:
     '''Function to process a multi-winner election'''
     winners = []
     new_ballots = ballots
@@ -124,6 +125,8 @@ def process_election(ballots : dict, num_winners : int, alpha : float) -> list:
             winner = process_round(new_ballots, candidates, alpha, last_round=True)
         winners.append(winner)
     return winners
+
+scheme: Scheme = process_election #Used for multi winner
 
 # '''Comment out main function and main call if running elections.json'''
 # def main():

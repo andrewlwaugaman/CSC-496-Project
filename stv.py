@@ -88,15 +88,13 @@ def stv(intBallots: list[Ballot], numWinners: int) -> Result:
                     if counts[candidate] < min_vote and candidates[candidate] > 0:
                         min_vote = counts[candidate]
                         loser = candidate
-                for candidate in candidates.keys():
-                    if counts[candidate] == min_vote:
-                        loser = candidate
                 candidates[loser] = 0
         candidates = recalculate_weights(candidates, quota, counts)
-        #print(quota)
-        #print(counts)
-        #print(candidates)
-    #print()
+        print(quota)
+        print(counts)
+        print(candidates)
+        print()
+    print()
     return list(winners)
 
 
