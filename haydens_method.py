@@ -88,9 +88,9 @@ def recalculate_ballots(ballots : dict, winner : str, alpha : float) -> dict:
             distance_from_first = len(ballot) if winner not in ballot else ballot.index(winner)
             ballot_without_winner = tuple(filter(lambda x : x != winner, ballot))
             if ballot_without_winner not in new_ballots:
-                new_ballots[ballot_without_winner] = ballots[ballot] / (1 + distance_from_first * alpha)
+                new_ballots[ballot_without_winner] = ballots[ballot] / (1 + (len(ballot) - distance_from_first) * alpha)
             else:
-                new_ballots[ballot_without_winner] += ballots[ballot] / (1 + distance_from_first * alpha)
+                new_ballots[ballot_without_winner] += ballots[ballot] / (1 + (len(ballot) - distance_from_first) * alpha)
     return new_ballots
 
 def process_election(ballots : list[Ballot], num_winners : int, alpha : float = 0.01) -> list:
@@ -114,6 +114,6 @@ def process_election(ballots : list[Ballot], num_winners : int, alpha : float = 
         winners.append(winner)
     return winners
 
-scheme: Scheme = process_election
+scheme: Scheme = process_election #Used for multi winner
 
 # Credit to https://github.com/haydenaa7/Condorcet-adjacent-multi-winner-voting-system/blob/main/voting_system.py
