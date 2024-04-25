@@ -19,6 +19,10 @@ parser.add_argument(
 )
 parser.add_argument("--num-elections", dest="elections", default=1, type=int)
 parser.add_argument("--output-file", dest="output", default="electionCorpus.json")
+
+# Unused, just here so running the other doesn't break it
+parser.add_argument("--num-winners", dest="winners", default=6)
+
 args = parser.parse_args()
 
 #random.seed(1)
@@ -79,7 +83,8 @@ def generate_rankings(votes, parties, party_size, unique_rankings, max_ranking_l
     for i in range(num_elections):
         rankings = set()
         for _ in range(max_rankings):
-            rankings.add(possible_rankings.pop())
+            if len(possible_rankings) > 0:
+                rankings.add(possible_rankings.pop())
         vote_partitions = []
         for _ in range(len(rankings) - 1):
             vote_partitions.append(random.randrange(0, votes))
@@ -102,6 +107,8 @@ def generate_rankings(votes, parties, party_size, unique_rankings, max_ranking_l
         for ballot in elections[i]["ballots"]:
             elections[i]["first_place_counts"][ballot["ranking"][0][0]] += ballot["count"]
         #print(elections[i])
+        for ranking in rankings:
+            possible_rankings.add(ranking)
 
     return_dict = {
         "num_voters": args.voters,
