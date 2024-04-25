@@ -58,7 +58,6 @@ for scheme in scheme_names:
     total_disproportionalities[scheme] = 0
     ties[scheme] = 0
 
-print()
 for election in elections:
     #for ballot in election.ballots:
     #    print(ballot)
@@ -73,13 +72,14 @@ for election in elections:
             for winner in winners:
                 party_winners[winner[0]] += 1
             for party in party_names:
-                disproportionality += pow((party_winners[party]/num_winners)-(election.first_place_counts[party]/args.voters), 2)/(election.first_place_counts[party]/args.voters)
+                # For the sake of not occasionally dividing by 0 we pretend parties with no votes actually got 1 vote
+                disproportionality += pow((party_winners[party]/num_winners)-(election.first_place_counts[party]/args.voters), 2)/(max(election.first_place_counts[party], 1)/args.voters)
             election.disproportionality[scheme_names[i]] = disproportionality
             total_disproportionalities[scheme_names[i]] += disproportionality
         else:
             ties[scheme_names[i]] += 1
             
-
+print()
 for i, election in enumerate(elections):
     print("\nElection " + str(i+1) + " results:\n")
     for scheme in scheme_names:
@@ -98,8 +98,9 @@ for scheme in scheme_names:
 
 print()
 
-# Quick Commands to copy and paste:
-# python3 proportionality_test.py --num-elections 5 --num-parties 2 --party-size 2 --num-winners 2
-# python3 proportionality_test.py --num-elections 5
-# python3 proportionality_test.py --num-elections 5 --max-ranking-length 6
-#
+# Some quick test commands to copy and paste:
+# python3 proportionality_test.py --num-elections 1000
+# python3 proportionality_test.py --num-elections 1000 --max-ranking-length 6
+# python3 proportionality_test.py --num-elections 1000 --num-parties 3 --num-winners 4
+# python3 proportionality_test.py --num-elections 1000 --num-parties 3 --num-winners 2
+# python3 proportionality_test.py --num-elections 1000 --num-parties 2 --party-size 2 --num-winners 2
