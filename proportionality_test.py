@@ -10,7 +10,7 @@ from types1 import Scheme
     
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--num-voters", dest="voters", default=10000, type=int)
+parser.add_argument("--num-voters", dest="voters", default=100000, type=int)
 parser.add_argument("--num-parties", dest="parties", default=4, type=int)
 parser.add_argument("--party-size", dest="party_size", default=3, type=int)
 parser.add_argument("--max-unique-rankings", dest="max_rankings", default=30, type=int)
@@ -53,8 +53,10 @@ party_names = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", 
 num_winners = int(args.winners)
 
 total_disproportionalities = {}
+ties = {}
 for scheme in scheme_names:
     total_disproportionalities[scheme] = 0
+    ties[scheme] = 0
 
 print()
 for election in elections:
@@ -67,24 +69,37 @@ for election in elections:
         party_winners = {}
         for party in party_names:
             party_winners[party] = 0
-        for winner in winners:
-            party_winners[winner[0]] += 1
-        for party in party_names:
-            disproportionality += pow((party_winners[party]/num_winners)-(election.first_place_counts[party]/args.voters), 2)/(election.first_place_counts[party]/args.voters)
-        election.disproportionality[scheme_names[i]] = disproportionality
-        total_disproportionalities[scheme_names[i]] += disproportionality
-
+        if None not in winners:
+            for winner in winners:
+                party_winners[winner[0]] += 1
+            for party in party_names:
+                disproportionality += pow((party_winners[party]/num_winners)-(election.first_place_counts[party]/args.voters), 2)/(election.first_place_counts[party]/args.voters)
+            election.disproportionality[scheme_names[i]] = disproportionality
+            total_disproportionalities[scheme_names[i]] += disproportionality
+        else:
+            ties[scheme_names[i]] += 1
+            
 
 for i, election in enumerate(elections):
     print("\nElection " + str(i+1) + " results:\n")
     for scheme in scheme_names:
-        print(scheme + " winners (ordered): " + str(election.winners[scheme]))
-        print(scheme + " winners (sorted): " + str(sorted(election.winners[scheme])))
-        print(scheme + " disproportionality: " + str(election.disproportionality[scheme]))
-        print()
+        if None not in election.winners[scheme]:
+            print(scheme + " winners (ordered): " + str(election.winners[scheme]))
+            print(scheme + " winners (sorted): " + str(sorted(election.winners[scheme])))
+            print(scheme + " disproportionality: " + str(election.disproportionality[scheme]))
+            print()
+        else:
+            print(scheme + " resulted in a tie.")
+            print()
 
 print()
 for scheme in scheme_names:
-    print("Average disproportionality of " + scheme + ": " + str(total_disproportionalities[scheme]/args.elections))
+    print("Average disproportionality of " + scheme + ": " + str(total_disproportionalities[scheme]/(int(args.elections)-ties[scheme])))
 
 print()
+
+# Quick Commands to copy and paste:
+# python3 proportionality_test.py --num-elections 5 --num-parties 2 --party-size 2 --num-winners 2
+# python3 proportionality_test.py --num-elections 5
+# python3 proportionality_test.py --num-elections 5 --max-ranking-length 6
+#

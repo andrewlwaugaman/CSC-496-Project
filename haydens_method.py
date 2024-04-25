@@ -16,7 +16,9 @@ def process_round(ballots : dict, candidates : list, alpha : float = 0.01, last_
     while (len(candidates) - 1) not in score.values():
         # Tie if alpha reaches infinity
         if alpha == 10.24:
-            return None if last_round else None, None
+            if last_round:
+                return None
+            return None, None
         if verbose:
             print("Alpha: " + str(alpha))
         score = {candidate : 0 for candidate in candidates}
