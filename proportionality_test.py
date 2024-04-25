@@ -51,6 +51,10 @@ schemes = [stv, pbv, k_borda, reweighted_borda, process_election]
 scheme_names = ["Single Transferable Vote", "Preferential Block Voting", "K-Borda Count", "Reweighted Borda Count", "Hayden's Method"]
 party_names = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"][0:args.parties]
 
+total_disproportionalities = {}
+for scheme in scheme_names:
+    total_disproportionalities[scheme] = 0
+
 print()
 for election in elections:
     #for ballot in election.ballots:
@@ -67,11 +71,19 @@ for election in elections:
         for party in party_names:
             disproportionality += pow((party_winners[party]/args.winners)-(election.first_place_counts[party]/args.voters), 2)/(election.first_place_counts[party]/args.voters)
         election.disproportionality[scheme_names[i]] = disproportionality
+        total_disproportionalities[scheme_names[i]] += disproportionality
+
 
 for i, election in enumerate(elections):
-    print("Election " + str(i) + " results:")
+    print("\nElection " + str(i) + " results:\n")
     for scheme in scheme_names:
         print(scheme + " winners (ordered): " + str(election.winners[scheme]))
         print(scheme + " winners (sorted): " + str(sorted(election.winners[scheme])))
         print(scheme + " disproportionality: " + str(election.disproportionality[scheme]))
         print()
+
+print()
+for scheme in scheme_names:
+    print("Average disproportionality of " + scheme + ": " + str(total_disproportionalities[scheme]/args.elections))
+
+print()
