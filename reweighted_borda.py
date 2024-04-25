@@ -1,4 +1,5 @@
 from collections import Counter
+import copy
 from typing import Hashable
 
 from types1 import Ballot, Result, Scheme
@@ -7,13 +8,14 @@ from shared_main import shared_main
 #https://electowiki.org/wiki/Reweighted_range_voting
 
 def adjust_weights(ballots: list[Ballot], winners, points, divisor) -> list[Ballot]:
-    for ballot in ballots:
+    newBallots = copy.deepcopy(ballots)
+    for ballot in newBallots:
         points_to_winners = 0
         for i, candidate in enumerate(ballot["ranking"]):
             if candidate in winners:
                 points_to_winners += points[i]
         ballot["tally"] = ballot["tally"]/(1+points_to_winners/divisor)
-    return ballots
+    return newBallots
 
 
 def floatify_ballots(ballots: list[Ballot]):
@@ -45,9 +47,10 @@ def reweighted_borda(intBallots: list[Ballot], numWinners: int) -> Result:
     points: list[int] = [c for c in range(size - 1, -1, -1)]
     divisor = points[0]
     winners = []
+    #print(ballots)
 
     while (len(winners) < numWinners):
-        for ballot in ballots:
+        for ballot in curBallots:
             for i, candidate in enumerate(ballot["ranking"]):
                 scores[candidate] += points[i] * ballot["tally"]
         winner = None
@@ -58,6 +61,7 @@ def reweighted_borda(intBallots: list[Ballot], numWinners: int) -> Result:
                 winner = candidate
         winners.append(winner)
         curBallots = adjust_weights(ballots, winners, points, divisor)
+        #print(curBallots)
         for candidate in candidates:
             scores[candidate] = 0
 

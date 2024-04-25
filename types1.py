@@ -15,6 +15,7 @@ class Election(NamedTuple):
     ballots: list[Ballot]
     winners: dict[str, Hashable]
     first_place_counts: dict[Hashable, int]
+    disproportionality: dict[Hashable, float]
 
 
 class Corpus(NamedTuple):

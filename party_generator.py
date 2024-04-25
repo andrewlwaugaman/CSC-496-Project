@@ -4,6 +4,8 @@ import random
 import json
 import sys
 
+from types1 import Election, Ballot
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--num-voters", dest="voters", default=10000, type=int)
 parser.add_argument("--num-parties", dest="parties", default=4, type=int)
@@ -95,8 +97,8 @@ def generate_rankings(votes, parties, party_size, unique_rankings, max_ranking_l
                     }
                 )
         elections[i]["first_place_counts"] = {}
-        for ballot in elections[i]["ballots"]:
-            elections[i]["first_place_counts"][ballot["ranking"][0][0]] = 0
+        for j in range(parties):
+            elections[i]["first_place_counts"][alphabet[j]] = 0
         for ballot in elections[i]["ballots"]:
             elections[i]["first_place_counts"][ballot["ranking"][0][0]] += ballot["count"]
         #print(elections[i])
@@ -116,5 +118,14 @@ def generate_rankings(votes, parties, party_size, unique_rankings, max_ranking_l
     else:
         with open(output_file, "w") as outfile:
             json.dump(return_dict, outfile, indent=4)
+    
+    altElections: list[Election] = []
+    for election in elections:
+        altBallots = []
+        for ballot in election["ballots"]:
+            altBallots.append(Ballot(tuple(ballot["ranking"]), ballot["count"]))
+        altElections.append(Election(altBallots, {}, election["first_place_counts"], {}))
+
+    return altElections
 
 generate_rankings(args.voters, args.parties, args.party_size, args.max_rankings, max_ranking_length, min_ranking_length, args.elections, args.output)

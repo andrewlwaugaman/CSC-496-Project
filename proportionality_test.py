@@ -7,21 +7,6 @@ from k_borda import k_borda
 from haydens_method import process_election
 from reweighted_borda import reweighted_borda
 from types1 import Scheme
-from utility import (
-    read_corpus,
-    unmarshal_corpus
-)
-
-
-def do_corpus_file(fname: str, scheme: Scheme, winners: int):
-    with open(fname, "r") as f:
-        data = read_corpus(f)
-    corpus = unmarshal_corpus(data)
-    elections = corpus.elections
-    results = []
-    for election in elections:
-        results.append(scheme(election.ballots, winners))
-    return results
     
 
 parser = argparse.ArgumentParser()
@@ -60,10 +45,33 @@ if args.min_ranking_length == -1:
 else:
     min_ranking_length = min(args.min_ranking_length, max_ranking_length)
 
-generate_rankings(args.voters, args.parties, args.party_size, args.max_rankings, max_ranking_length, min_ranking_length, args.elections, args.output)
+elections = generate_rankings(args.voters, args.parties, args.party_size, args.max_rankings, max_ranking_length, min_ranking_length, args.elections, args.output)
 
 schemes = [stv, pbv, k_borda, reweighted_borda, process_election]
 scheme_names = ["Single Transferable Vote", "Preferential Block Voting", "K-Borda Count", "Reweighted Borda Count", "Hayden's Method"]
+party_names = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"][0:args.parties]
 
-for i in range(len(schemes)):
-    print(do_corpus_file(args.output, schemes[i], args.winners))
+print()
+for election in elections:
+    #for ballot in election.ballots:
+    #    print(ballot)
+    for i in range(len(schemes)):
+        winners = schemes[i](election.ballots, args.winners)
+        election.winners[scheme_names[i]] = winners
+        disproportionality = 0
+        party_winners = {}
+        for party in party_names:
+            party_winners[party] = 0
+        for winner in winners:
+            party_winners[winner[0]] += 1
+        for party in party_names:
+            disproportionality += pow((party_winners[party]/args.winners)-(election.first_place_counts[party]/args.voters), 2)/(election.first_place_counts[party]/args.voters)
+        election.disproportionality[scheme_names[i]] = disproportionality
+
+for i, election in enumerate(elections):
+    print("Election " + str(i) + " results:")
+    for scheme in scheme_names:
+        print(scheme + " winners (ordered): " + str(election.winners[scheme]))
+        print(scheme + " winners (sorted): " + str(sorted(election.winners[scheme])))
+        print(scheme + " disproportionality: " + str(election.disproportionality[scheme]))
+        print()
