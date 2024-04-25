@@ -76,19 +76,6 @@ def process_round(ballots : dict, candidates : list, alpha : float = 0.01, last_
     else:
         return winner, recalculate_ballots(ballots, winner, alpha)
 
-'''For elections.json'''
-def elections_test(ballots : list[Ballot]):
-    converted_ballots = {ballot.ranking : ballot.tally for ballot in ballots}
-    candidates = []
-    for ranking in converted_ballots.keys():
-        for candidate in ranking:
-            if candidate not in candidates:
-                candidates.append(candidate)
-    winner = process_round(converted_ballots, candidates, last_round=True, verbose=False)
-    return (winner, True) if winner not in [None, (None, None)] else (None, False)
-
-#scheme: Scheme = elections_test #Used for single winner
-
 def recalculate_ballots(ballots : dict, winner : str, alpha : float) -> dict:
     '''
     Loop through ballots, recalculating votes (changing voting power) according to the distance the winner was from first choice
@@ -127,36 +114,6 @@ def process_election(ballots : list[Ballot], num_winners : int, alpha : float = 
         winners.append(winner)
     return winners
 
-scheme: Scheme = process_election #Used for multi winner
-
-# '''Comment out main function and main call if running elections.json'''
-# def main():
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("-e", "--election-file", dest="ballots", required=True)
-#     parser.add_argument("-n", "--num-winners", dest="num_winners", default=1)
-#     parser.add_argument("-a", "--alpha", dest="alpha", default=0.01)
-#     args = parser.parse_args()
-
-#     num_winners = int(args.num_winners)
-#     alpha = float(args.alpha)
-
-#     ballots = {}
-#     with open(args.ballots, "r") as election:
-#         for line in election:
-#             split = line.strip().split(",")
-#             if split[1] == '':
-#                 continue
-#             votes = int(split[0])
-#             ranking = tuple(split[1:])
-#             ballots[ranking] = votes
-
-#     winners = process_election(ballots, num_winners, alpha)
-#     print("ELECTION RESULTS")
-#     if None in winners:
-#         print("There was a tie in round " + str(winners.index(None)+1) + ".")
-#     else:
-#         for i, winner in enumerate(winners):
-#             print(str(i+1) + ". " + winner)
-# main()
+scheme: Scheme = process_election
 
 # Credit to https://github.com/haydenaa7/Condorcet-adjacent-multi-winner-voting-system/blob/main/voting_system.py
